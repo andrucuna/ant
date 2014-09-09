@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="projname” default="init">
+ 
+    <!-- properties -->
+    <!-- make sure you are pointing to the right folder since purgeDeploy can delete undesired files... -->
+	<property name="deploy.dir" value=“/somewhere/on/your/laptop/destination” />
+	<property name="src.dir" value=“/somewhere/on/your/laptop/source” />
+    
+	
+    <!-- custom tasks -->
+	<target name="init">
+		<antcall target="purgeDeploy" />
+		<antcall target="mkDirs" />
+		<antcall target="copyToDeploy" />
+	</target>
+    
+	
+    <!-- targets -->
+    <target name="mkDirs" description="Make required dirs.">
+        <echo message="Creating required directories..."/>
+        <mkdir dir="${deploy.dir}"/>
+    </target>
+ 
+    <target name="purgeDeploy" description="Delete old deploy files.">
+        <echo message="Deleting old deploy files..."/>
+        <delete includeEmptyDirs="true">
+            <fileset dir="${deploy.dir}">
+                <include name="**" />
+                <exclude name="**/.svn" /> <!-- skip .svn folders otherwise it will cause SVN conflicts -->
+            </fileset>
+        </delete>
+    </target>
+    
+    <target name="copyToDeploy" description="Copy files to deploy folder.">
+        <copy todir="${deploy.dir}">
+            <fileset dir="${src.dir}">
+                <include name="**" />
+                <exclude name="**/_*/**" /> <!-- ignore files/folders starting with underscore -->
+                <exclude name="**/.svn" />
+                <exclude name="**/.git" />
+                <exclude name="**/.hg" />
+                <exclude name="**/.DS_Store" />
+                <exclude name="**/.tmp*" />
+            	<exclude name="**/.project" />
+            	<exclude name="**/.classpath" />
+                <exclude name="**/.livereload" />
+                <exclude name="**/.jshintrc" />
+            	<exclude name="**/.settings/**" />
+            	<exclude name="**/bin/**" />
+            	<exclude name="**/.worksheet/**" />
+            	<exclude name="**/ant/**" />
+            	<exclude name="build.xml" />
+            </fileset>
+        </copy>
+    </target>
+    
+</project>
